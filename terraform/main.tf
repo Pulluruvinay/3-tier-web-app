@@ -22,12 +22,16 @@ module "alb" {
 }
 
 module "ecs" {
-  source           = "./modules/ecs"
-  vpc_id           = module.vpc.vpc_id
-  private_subnets  = module.vpc.private_subnets
-  ecr_image        = var.ecr_image
-  target_group_arn = module.alb.target_group_arn
-  db_host          = module.rds.db_endpoint
-  db_user          = var.db_user
-  db_password      = var.db_password
+  source = "./modules/ecs"
+
+  vpc_id                = module.vpc.vpc_id
+  private_subnets       = module.vpc.private_subnets
+  target_group_arn      = module.alb.target_group_arn
+  alb_security_group_id = module.alb.alb_security_group_id
+
+  ecr_image   = var.ecr_image
+  db_host     = module.rds.db_endpoint
+  db_user     = var.db_user
+  db_password = var.db_password
 }
+
