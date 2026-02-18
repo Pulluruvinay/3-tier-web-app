@@ -16,11 +16,11 @@ jobs:
 
     steps:
 
-    # 1️⃣ Checkout Code
+    #  Checkout Code
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    # 2️⃣ Configure AWS Credentials
+    #  Configure AWS Credentials
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
@@ -28,39 +28,39 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
         aws-region: ${{ env.AWS_REGION }}
 
-    # 3️⃣ Login to Amazon ECR
+    #  Login to Amazon ECR
     - name: Login to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
 
-    # 4️⃣ Build Docker Image
+    #  Build Docker Image
     - name: Build Docker Image
       run: |
         docker build -t $ECR_REPOSITORY ./app
         docker tag $ECR_REPOSITORY:latest \
           ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
 
-    # 5️⃣ Push Image to ECR
+    #  Push Image to ECR
     - name: Push Docker Image
       run: |
         docker push \
           ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.IMAGE_TAG }}
 
-    # 6️⃣ Setup Terraform
+    #  Setup Terraform
     - name: Setup Terraform
       uses: hashicorp/setup-terraform@v2
 
-    # 7️⃣ Terraform Init
+    #  Terraform Init
     - name: Terraform Init
       working-directory: terraform
       run: terraform init
 
-    # 8️⃣ Terraform Validate
+    #  Terraform Validate
     - name: Terraform Validate
       working-directory: terraform
       run: terraform validate
 
-    # 9️⃣ Terraform Apply
+    # Terraform Apply
     - name: Terraform Apply
       working-directory: terraform
       run: |
